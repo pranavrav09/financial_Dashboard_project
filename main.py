@@ -6,7 +6,7 @@ app = dash.Dash(__name__)
 
 app.layout = html.Div([
     html.H1("Analysis Options"),
-    html.Button("Single Stock Analysis", id="univariate-button"),
+    html.Button("Univariate Analysis", id="univariate-button"),
     html.Button("Multivariate Analysis", id="multivariate-button"),
 ])
 
