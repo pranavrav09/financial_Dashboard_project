@@ -1,26 +1,26 @@
 import dash
-from dash import dcc, html
-from dash.dependencies import Input, Output
+from dash import dcc, html, Input, Output
+import dash_bootstrap_components as dbc
 
-app = dash.Dash(__name__)
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 app.layout = html.Div([
     html.H1("Analysis Options"),
     html.Button("Univariate Analysis", id="univariate-button"),
     html.Button("Multivariate Analysis", id="multivariate-button"),
+    html.Div(id="ticker-input", children=[]),
 ])
 
 
 @app.callback(
-    Output('univariate-button', 'n_clicks'),
-    Output('multivariate-button', 'n_clicks'),
-    Input('univariate-button', 'n_clicks'),
-    Input('multivariate-button', 'n_clicks')
+    Output('ticker-input', 'children'),
+    Input('univariate-button', 'n_clicks')
 )
-def handle_button_clicks(univariate_clicks, multivariate_clicks):
-    if univariate_clicks or multivariate_clicks:
-        print("Button clicked!")
-    return univariate_clicks, multivariate_clicks
+def get_ticker_input(n_clicks):
+    if n_clicks:
+        return dbc.Input(id="ticker-input-box", placeholder="Enter Ticker Symbol", type="text", value="")
+    else:
+        return []
 
 
 if __name__ == '__main__':
