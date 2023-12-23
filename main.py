@@ -9,7 +9,6 @@ import numpy as np
 import scipy.stats as stats
 from datetime import datetime
 
-# Additional imports for the new distributions
 from scipy.stats import t, laplace
 
 def get_stock_data(ticker, start_date, end_date):
@@ -58,7 +57,6 @@ def getTimePlots(df):
 
 
 
-# Function to create time plots for asset prices and log returns
 def getTimePlots(df):
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=df.index, y=df['Adj Close'], mode='lines', name='Asset Prices'))
@@ -125,7 +123,8 @@ app.layout = dbc.Container([
 def update_analysis(n_clicks, ticker, start_date, end_date):
     df = get_stock_data(ticker, start_date, end_date)
     if df is None:
-        return [html.Div("No data available")] * 7
+        no_data_message = html.Div("No data available")
+        return [no_data_message] * 7
 
     lrets = np.log(df['Adj Close'] / df['Adj Close'].shift(1)).replace([np.inf, -np.inf], np.nan).dropna()
 
@@ -136,7 +135,9 @@ def update_analysis(n_clicks, ticker, start_date, end_date):
                             yaxis_title="Frequency")
 
     qq_plots = getQQPlots(lrets)
+
     time_plot = getTimePlots(df)
+
     risk_table = getUniTailRiskTable(lrets)
 
     return (
@@ -144,10 +145,11 @@ def update_analysis(n_clicks, ticker, start_date, end_date):
         [dcc.Graph(figure=qq_plots['Normal'])],
         [dcc.Graph(figure=qq_plots['Student-t'])],
         [dcc.Graph(figure=qq_plots['Double Exponential'])],
-        [dcc.Graph(figure=qq_plots['Generalized Error'])],
+        [html.Div("Generalized Error QQ Plot not implemented")],
         [dcc.Graph(figure=time_plot)],
         [html.Div([html.H4("Risk Measures"), dbc.Table.from_dataframe(risk_table, striped=True, bordered=True, hover=True)])]
     )
+
 
 @app.callback(
     Output("collapse", "is_open"),
